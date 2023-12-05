@@ -1,6 +1,7 @@
 package com.gamesstorebe.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -35,6 +36,7 @@ public class User implements UserDetails {
             joinColumns = {@JoinColumn(name="username")},
             inverseJoinColumns = {@JoinColumn(name="role_id")}
     )
+    @JsonIgnore
     private Set<Role> userRole;
 
     @Override
