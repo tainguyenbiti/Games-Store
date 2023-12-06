@@ -2,8 +2,8 @@ package com.gamesstorebe.controller;
 
 import com.gamesstorebe.entity.User;
 import com.gamesstorebe.service.AuthService;
+import com.gamesstorebe.customHandleError.system.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,12 +14,12 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping(value = "/register", consumes = "application/json")
-    public ResponseEntity<Object> register(@RequestBody User user) {
+    public Result register(@RequestBody User user) {
         return authService.registerUser(user);
     }
 
     @PostMapping(value = "/login")
-    public ResponseEntity<Object> login(@RequestParam ("email") String email , @RequestParam ("password") String password) {
+    public Result login(@RequestParam ("email") String email , @RequestParam ("password") String password) {
         return authService.loginUser(email, password);
     }
 
