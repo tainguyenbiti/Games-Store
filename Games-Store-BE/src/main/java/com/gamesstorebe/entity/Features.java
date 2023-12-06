@@ -15,6 +15,4 @@ public class Features {
     private int id;
     private String featureName;
 
-    @OneToMany(mappedBy = "feature")
-    private Set<Product> products = new HashSet<>();
 }

@@ -7,8 +7,8 @@ import com.gamesstorebe.entity.User;
 import com.gamesstorebe.repository.RoleRepository;
 import com.gamesstorebe.repository.UserRepository;
 import com.gamesstorebe.customHandleError.system.Result;
-import com.gamesstorebe.customHandleError.system.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,10 +39,10 @@ public class AuthService {
 
     public Result registerUser(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            return new Result(false, StatusCode.SUCCESS, "User already registered", null);
+            return new Result(false, HttpStatus.CONFLICT, "User already registered", null);
         }
         if (user.getEmail().isEmpty() || user.getPassword().isEmpty()) {
-            return new Result(false, StatusCode.SUCCESS, "Username or password is empty", null);
+            return new Result(false, HttpStatus.BAD_REQUEST, "Username or password is empty", null);
         }
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         Role role = roleRepository.findByRole("USER").orElseThrow(() -> new RuntimeException("Role not found"));
@@ -52,7 +52,7 @@ public class AuthService {
         user.setStatus(true);
         user.setPassword(encodedPassword);
         userRepository.save(user);
-        return new Result(true, StatusCode.SUCCESS, "Register successfully", userRepository.findByEmail(user.getEmail()));
+        return new Result(true, HttpStatus.OK, "Register successfully", userRepository.findByEmail(user.getEmail()));
     }
 
     public Result loginUser(String email, String password){
@@ -64,7 +64,7 @@ public class AuthService {
                 String token = tokenService.generateToken(auth);
                 loginResultMap.put("user info", user);
                 loginResultMap.put("token", token);
-                return new Result(true, StatusCode.SUCCESS, "Register successfully", loginResultMap);
+                return new Result(true, HttpStatus.OK, "Register successfully", loginResultMap);
     }
 }
 

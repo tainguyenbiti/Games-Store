@@ -15,7 +15,5 @@ public class Developers {
     private int id;
     private String  developerName;
 
-    @OneToMany(mappedBy = "developer")
-    private Set<Product> products = new HashSet<>();
 
 }

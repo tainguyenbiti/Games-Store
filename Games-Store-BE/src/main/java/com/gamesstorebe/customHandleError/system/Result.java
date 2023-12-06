@@ -1,5 +1,7 @@
 package com.gamesstorebe.customHandleError.system;
 
+import org.springframework.http.HttpStatus;
+
 /**
  * This class defines the schema of the response. It is used to encapsulate data prepared by
  * the server side, this object will be serialized to JSON before sent back to the client end.
@@ -18,15 +20,15 @@ public class Result {
     public Result() {
     }
 
-    public Result(boolean flag, Integer code, String message) {
+    public Result(boolean flag, HttpStatus code, String message) {
         this.flag = flag;
-        this.code = code;
+        this.code = code.value();
         this.message = message;
     }
 
-    public Result(boolean flag, Integer code, String message, Object data) {
+    public Result(boolean flag, HttpStatus code, String message, Object data) {
         this.flag = flag;
-        this.code = code;
+        this.code = code.value();
         this.message = message;
         this.data = data;
     }
