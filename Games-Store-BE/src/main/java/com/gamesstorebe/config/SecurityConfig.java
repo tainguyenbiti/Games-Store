@@ -69,8 +69,7 @@ public class SecurityConfig {
                         .requestMatchers("/file/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .oauth2Login()
-                .and()
+
                 .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
                         .jwt(jwtConfigurer -> jwtConfigurer
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter())
