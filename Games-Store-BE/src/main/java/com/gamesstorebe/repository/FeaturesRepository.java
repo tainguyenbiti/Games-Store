@@ -11,11 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@Repository(value = "productRepository")
-public interface ProductRepository extends JpaRepository<Product, Integer> {
-
-     Optional<Product> deleteProductById(Integer id);
-     @Query(value = "select p from Product p join p.productsFeatures f where f.id = :id")
-     Optional<List<Product>> findAllByFeatures(@Param("id") int id);
-
+@Repository
+public interface FeaturesRepository extends JpaRepository<Features, Integer> {
+    @Query("select f from Features f join f.productsFeatures p where p.id = :productId")
+    Optional<List<Features>> findAllByProduct(@Param("productId") int productId);
 }

@@ -1,12 +1,15 @@
 package com.gamesstorebe.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
 @Table(name = "orders")
-@Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Order {
     @Id

@@ -1,6 +1,7 @@
-package com.gamesstorebe.fileHandle;
+package com.gamesstorebe.service;
 
 import com.gamesstorebe.customHandleError.system.Result;
+import com.gamesstorebe.util.FileUtil;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -14,14 +15,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 @Service
 public class FileHandleService {
 
     public ResponseEntity<Resource> showImage(String fileName) throws IOException {
-        String imagePath = FileUtil.PATH_FILE_UPLOAD + "/image/" + fileName;
+        String imagePath = FileUtil.PATH_FILE_UPLOAD + "/file/image/" + fileName;
 
         Path path = Paths.get(imagePath);
+
         Resource resource = new ByteArrayResource(Files.readAllBytes(path));
 
         return ResponseEntity.ok()
@@ -31,9 +34,9 @@ public class FileHandleService {
     }
     public Result uploadImage(MultipartFile file)
             throws IOException {
-        StringBuilder fileName = new StringBuilder();
-        String imagePath = FileUtil.PATH_FILE_UPLOAD + "/image/" ;
-        Path fileNameAndPath = Paths.get(imagePath, file.getOriginalFilename());
+        String imagePath = FileUtil.PATH_FILE_UPLOAD + "/file/image/";
+        String reNameFile =  FileUtil.reNameFile(Objects.requireNonNull(file.getOriginalFilename()));
+        Path fileNameAndPath = Paths.get(imagePath, reNameFile);
         Files.write(fileNameAndPath, file.getBytes());
         return new Result(true, HttpStatus.OK, "Upload successfully", null);
     }

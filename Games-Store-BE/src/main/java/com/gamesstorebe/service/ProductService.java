@@ -2,7 +2,6 @@ package com.gamesstorebe.service;
 
 import com.gamesstorebe.customHandleError.system.Result;
 import com.gamesstorebe.entity.Product;
-import com.gamesstorebe.entity.RatingReview;
 import com.gamesstorebe.repository.ProductRepository;
 import com.gamesstorebe.repository.RatingReviewRepository;
 import org.springframework.http.HttpStatus;
@@ -50,8 +49,8 @@ public class ProductService {
 
     public Result findProductById(Integer id) {
         try {
-            Optional<Product> product = productRepository.findProductById(id);
-            if (product.isPresent()) {
+           Product product = productRepository.findById(id).orElse(null);
+            if (product!=null) {
                 return new Result(true, HttpStatus.OK, "The product has been successfully found", product);
             }
             return new Result(false, HttpStatus.NOT_FOUND, "The product does not exist", null);
@@ -62,7 +61,7 @@ public class ProductService {
     }
     public Result deleteProductById(Integer id) {
         try {
-            Optional<Product> existingProduct  = productRepository.findProductById(id);
+            Optional<Product> existingProduct  = productRepository.findById(id);
             if (existingProduct.isPresent()) {
                 productRepository.deleteProductById(id);
                 return new Result(true,HttpStatus.OK, "Product deleted successfully", null);
@@ -71,6 +70,19 @@ public class ProductService {
             }
 
         } catch (Exception e) {
+            return new Result(false,HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null);
+        }
+    }
+
+    public Result findProductByFeatures(int featuresID) {
+        try {
+            Optional<List<Product>> product = productRepository.findAllByFeatures(featuresID);
+            if (product.isPresent()) {
+                return new Result(true, HttpStatus.OK, "The product has been successfully found", product);
+            }
+            return new Result(false, HttpStatus.NOT_FOUND, "The product does not exist", null);
+        }
+        catch (Exception e) {
             return new Result(false,HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null);
         }
     }

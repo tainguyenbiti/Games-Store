@@ -1,6 +1,7 @@
-package com.gamesstorebe.fileHandle;
+package com.gamesstorebe.controller;
 
 import com.gamesstorebe.customHandleError.system.Result;
+import com.gamesstorebe.service.FileHandleService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

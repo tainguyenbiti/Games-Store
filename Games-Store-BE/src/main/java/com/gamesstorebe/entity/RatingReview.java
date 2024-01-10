@@ -1,11 +1,14 @@
 package com.gamesstorebe.entity;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Date;
 
 @Entity
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table
 public class RatingReview {
     @Id

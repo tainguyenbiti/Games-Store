@@ -1,4 +1,4 @@
-package com.gamesstorebe.fileHandle;
+package com.gamesstorebe.util;
 
 import jakarta.servlet.http.Part;
 

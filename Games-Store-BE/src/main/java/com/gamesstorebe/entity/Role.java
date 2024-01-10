@@ -1,11 +1,14 @@
 package com.gamesstorebe.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
 @Entity
-@Table
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Role implements GrantedAuthority {
     @Id
