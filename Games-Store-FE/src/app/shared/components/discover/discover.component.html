@@ -1,0 +1,8 @@
+<p>discover works!</p>
+<div *ngFor="let product of products">
+    <div *ngIf="product.productImages">
+        <div *ngFor="let img of product.productImages">
+            <img [src]="img.path" [alt]="img.name">
+        </div>
+    </div>
+</div>

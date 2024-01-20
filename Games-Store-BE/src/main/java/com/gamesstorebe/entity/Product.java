@@ -45,4 +45,5 @@ public class Product {
     @JoinColumn(name = "developer_id")
     private Developers developer;
 
+
 }

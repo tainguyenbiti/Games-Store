@@ -2,11 +2,14 @@ package com.gamesstorebe.service;
 
 import com.gamesstorebe.customHandleError.system.Result;
 import com.gamesstorebe.entity.Product;
+import com.gamesstorebe.entity.ProductImage;
+import com.gamesstorebe.repository.ProductImageRepository;
 import com.gamesstorebe.repository.ProductRepository;
 import com.gamesstorebe.repository.RatingReviewRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,9 +17,16 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final FileHandleService fileHandleService;
+    private final ProductImageService productImageService;
 
-    public ProductService(ProductRepository productRepository, RatingReviewRepository ratingReviewRepository) {
+    private final ProductImageRepository productImageRepository;
+
+    public ProductService(ProductRepository productRepository, RatingReviewRepository ratingReviewRepository, FileHandleService fileHandleService, ProductImageService productImageService, ProductImageRepository productImageRepository) {
         this.productRepository = productRepository;
+        this.fileHandleService = fileHandleService;
+        this.productImageService = productImageService;
+        this.productImageRepository = productImageRepository;
     }
 
     public Result getAllProducts() {
@@ -34,18 +44,32 @@ public class ProductService {
         }
     }
 
-    public Result saveProduct(Product product) {
-        try {
-            Optional<Product> productOptional = Optional.ofNullable(product);
-            if (productOptional.isPresent()) {
-                return new Result(true, HttpStatus.OK, "The product has been successfully created", product);
+    public void saveProduct(Product product, MultipartFile[] file) throws IOException {
+            if (product.getId() == 0) {
+                productRepository.save(product);
+                //save image with product id
+                List<ProductImage> productImageList = productImageService.getProductImagesByProductId(product.getId());
+                for (MultipartFile file1: file){
+                    ProductImage productImage = new ProductImage();
+                    productImage.setName(fileHandleService.uploadImage(file1));
+                    productImage.setProduct(product);
+                    productImageRepository.save(productImage);
+                }
+            }else {
+                Product productExist = productRepository.findById(product.getId()).get();
+                productExist.setName(product.getName());
+                productExist.setProductsFeatures(product.getProductsFeatures());
+                productExist.setStatus(product.isStatus());
+                productExist.setCategories(product.getCategories());
+                productExist.setDescription(product.getDescription());
+                productExist.setPrice(product.getPrice());
+                productExist.setDeveloper(product.getDeveloper());
+                productExist.setStock(product.getStock());
+                productExist.setReleaseDate(product.getReleaseDate());
+                productRepository.save(productExist);
+
             }
-            return new Result(false, HttpStatus.BAD_REQUEST, "Invalid request or incorrect input data", null);
         }
-        catch (Exception e) {
-            return new Result(false,HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null);
-        }
-    }
 
     public Result findProductById(Integer id) {
         try {
@@ -68,7 +92,6 @@ public class ProductService {
             } else {
                 return new Result(true, HttpStatus.NOT_FOUND, "Product not found or could not be deleted", null);
             }
-
         } catch (Exception e) {
             return new Result(false,HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null);
         }

@@ -1,9 +1,14 @@
 package com.gamesstorebe.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gamesstorebe.customHandleError.system.Result;
 import com.gamesstorebe.entity.Product;
 import com.gamesstorebe.service.ProductService;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/product")
@@ -25,8 +30,20 @@ public class ProductController {
     }
 
     @PostMapping("save-product")
-    public Result saveProduct (@RequestBody Product product){
-        return productService.saveProduct(product);
+    public Result saveProduct (@RequestParam String product, @RequestParam("image") MultipartFile[] file) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Product productEntity = mapper.readValue(product, Product.class);
+        try {
+            if (productEntity.getId() == 0) {
+                productService.saveProduct(productEntity, file);
+                return new Result(true, HttpStatus.OK, "The product has been successfully created", productEntity);
+            }else {
+                productService.saveProduct(productEntity, file);
+                return new Result(true, HttpStatus.OK,"The product has been edit successfully", productEntity);
+            }
+        }catch (Exception e) {
+            return new Result(false,HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null);
+        }
     }
 
     @GetMapping("/get-product-by-featured/{featuredId}")

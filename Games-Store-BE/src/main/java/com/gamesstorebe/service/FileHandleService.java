@@ -5,7 +5,6 @@ import com.gamesstorebe.util.FileUtil;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,12 +31,12 @@ public class FileHandleService {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + fileName)
                 .body(resource);
     }
-    public Result uploadImage(MultipartFile file)
+    public String uploadImage(MultipartFile file)
             throws IOException {
         String imagePath = FileUtil.PATH_FILE_UPLOAD + "/file/image/";
         String reNameFile =  FileUtil.reNameFile(Objects.requireNonNull(file.getOriginalFilename()));
         Path fileNameAndPath = Paths.get(imagePath, reNameFile);
         Files.write(fileNameAndPath, file.getBytes());
-        return new Result(true, HttpStatus.OK, "Upload successfully", null);
+        return reNameFile;
     }
 }
